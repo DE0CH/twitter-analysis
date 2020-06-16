@@ -1,0 +1,5 @@
+ipython
+requests
+googletrans
+googlemaps
+boto3

@@ -3,3 +3,4 @@ requests
 googletrans
 googlemaps
 boto3
+progressbar2

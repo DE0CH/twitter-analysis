@@ -7,20 +7,12 @@ import threading
 import coloredlogs, logging
 import queue
 
-coloredlogs.install()
-logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
 def worker():
     while True:
         path, dirs, files = q.get()
         process_files(path, dirs, files)
         q.task_done()
-
-q = queue.Queue()
-for i in range(10):
-     t = threading.Thread(target=worker, daemon=True).start()
-
-
 
 
 def process_files(path, dirs, files):
@@ -59,6 +51,15 @@ def process_files(path, dirs, files):
 
 
 if __name__ == '__main__':
+    coloredlogs.install()
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+    q = queue.Queue()
+    try:
+        os.makedirs('processed')
+    except FileExistsError:
+        pass
+    for i in range(10):
+        t = threading.Thread(target=worker, daemon=True).start()
     total_num = 0
     filtered_num = 0
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'

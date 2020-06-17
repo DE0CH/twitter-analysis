@@ -1,16 +1,12 @@
 import requests
 from os import path
 import boto3
+import sys
+import progressbar
 if __name__ == '__main__':
-    s3_client = boto3.client('s3',
-                             region_name='ap-east-1',
-                             aws_access_key_id='AKIAXS73WH3R3G77ZWBJ',
-                             aws_secret_access_key='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')
-
-    with open('archive_links.txt') as links_f:
+    with open('archive_links2.txt') as links_f:
         for url in links_f:
             url = url.strip()
-            url = 'https://file-examples.com/wp-content/uploads/2017/10/file-sample_150kB.pdf'
             if not url:
                 continue
             f_name = url.rsplit('/', 1)[-1]
@@ -18,8 +14,22 @@ if __name__ == '__main__':
             print(f_name)
             print(url)
             # below is downloading content
-            r = requests.get(url, allow_redirects=True)
-            print('writing content...')
+
             with open(f_path, 'wb') as f:
-                f.write(r.content)
-            s3_client.upload_file(f_path, 'de0ch-twitter-archive', f_name)
+                response = requests.get(url, allow_redirects=True, stream=True)
+                total_length = response.headers.get('content-length')
+
+                if total_length is None:  # no content length header
+                    f.write(response.content)
+                else:
+                    total_length = int(total_length)
+                    with progressbar.ProgressBar(max_value=total_length) as bar:
+                        dl = 0
+                        for data in response.iter_content(chunk_size=4096):
+                            dl += len(data)
+                            f.write(data)
+                            # noinspection PyBroadException
+                            try:
+                                bar.update(dl)
+                            except:
+                                pass

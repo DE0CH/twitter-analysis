@@ -6,13 +6,25 @@ import threading
 import pycountry
 
 
+def filter_info(old):
+    new = {
+        'created_at': old['created_at'],
+        'id': old['id'],
+        'text': old['text'],
+        'source': old['source'],
+        'translated_text': old['translated_text'],
+        'country_code': old['place']['country_code']
+    }
+    return new
+
+
 def file_processor():
     while True:
         file_path = q.get()
         with open(file_path) as f:
             for line in f:
-                tweet = json.loads(line)
-                country = tweet['place']['country_code']
+                tweet = filter_info(json.loads(line))
+                country = tweet['country_code']
                 if country == '':
                     continue
                 if country not in country_files:
@@ -20,7 +32,7 @@ def file_processor():
                                               threading.Lock())
                 file, lock = country_files[country]
                 with lock:
-                    file.write(line)
+                    file.write(json.dumps(tweet) + '\n')
         processed_names.add(file_path)
         q.task_done()
 

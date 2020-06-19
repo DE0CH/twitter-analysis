@@ -78,3 +78,4 @@ if __name__ == '__main__':
     q.join()
     with open('geo_filtered.pkl', 'wb') as f:
         pickle.dump(geo_filtered, f)
+    print('done')

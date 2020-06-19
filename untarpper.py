@@ -15,10 +15,12 @@ if __name__ == '__main__':
             if file_path in untarred:
                 continue
             file_name_no_extension, file_extension = os.path.splitext(file)
-            subprocess.run(['mkdir', file_name_no_extension], cwd=path)
-            processes.append(subprocess.Popen(['tar', '-xf', file, '-C', file_name_no_extension], cwd='untarred'))
+            os.makedirs(os.path.join('untarred', file_name_no_extension), exist_ok=True)
+            processes.append(subprocess.Popen(
+                ['tar', '-xf', os.path.join(path, file), '-C', os.path.join('untarred', file_name_no_extension)]))
             untarred.add(file_path)
-    [process.wait() for process in processes]
+    for process in processes:
+        process.wait()
     with open('untarred.pkl', 'wb') as f:
         pickle.dump(untarred, f)
 

@@ -3,7 +3,11 @@ from os import path
 import boto3
 import sys
 import progressbar
+import coloredlogs
+import logging
 if __name__ == '__main__':
+    coloredlogs.install()
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     with open('archive_links.txt') as links_f:
         for url in links_f:
             url = url.strip()
@@ -11,8 +15,7 @@ if __name__ == '__main__':
                 continue
             f_name = url.rsplit('/', 1)[-1]
             f_path = path.join('downloads', f_name)
-            print(f_name)
-            print(url)
+            logging.info('started downloading: ' + url)
             # below is downloading content
 
             with open(f_path, 'wb') as f:

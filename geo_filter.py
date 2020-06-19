@@ -49,7 +49,6 @@ def process_files(path, dirs, files):
                                 out_file.write(out_s)
                         except Exception:
                             logging.exception('failed to process tweet')
-                            pass
                 logging.info('finished ' + os.path.join(path, file_name))
         geo_filtered.add(os.path.join(path, file_name))
 

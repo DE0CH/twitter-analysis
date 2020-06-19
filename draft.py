@@ -7,7 +7,7 @@ if __name__ == '__main__':
                              aws_access_key_id='AKIAXS73WH3R3G77ZWBJ',
                              aws_secret_access_key='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')
 
-    with open('archive_links.txt') as links_f:
+    with open('archive_links_raw.txt') as links_f:
         for url in links_f:
             url = url.strip()
             if not url:

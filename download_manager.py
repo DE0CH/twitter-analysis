@@ -4,7 +4,7 @@ import boto3
 import sys
 import progressbar
 if __name__ == '__main__':
-    with open('archive_links2.txt') as links_f:
+    with open('archive_links.txt') as links_f:
         for url in links_f:
             url = url.strip()
             if not url:

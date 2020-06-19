@@ -22,10 +22,7 @@ def process_files(path, dirs, files):
             continue
         file_name_no_extension, file_extension = os.path.splitext(file_name)
         out_file_name = os.path.join('processed', os.path.relpath(path, start='untarred'), file_name_no_extension)
-        try:
-            os.makedirs(os.path.dirname(out_file_name))
-        except FileExistsError:
-            pass
+        os.makedirs(os.path.dirname(out_file_name), exist_ok=True)
         with open(out_file_name, 'w') as out_file:
             if file_name.endswith('.json.bz2'):
                 with open(os.path.join(path, file_name), 'rb') as file:

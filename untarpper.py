@@ -1,9 +1,24 @@
 import subprocess
+import pickle
 import os
 if __name__ == '__main__':
-    for path, dirs, files in os.walk('downloads'):
-        for file in files:
+    processes = []
+    try:
+        with open('untarred.pkl', 'rb') as f:
+            untarred = pickle.load(f)
+    except FileNotFoundError:
+        untarred = set()
+    path = 'downloads'
+    for file in os.listdir('downloads'):
+        if file.endswith('.json'):
+            file_path = os.path.join(path, file)
+            if file_path in untarred:
+                continue
             file_name_no_extension, file_extension = os.path.splitext(file)
-            subprocess.Popen(['mkdir', file_name_no_extension], cwd=path)
-            subprocess.Popen(['tar', '-xf', file, '-C', file_name_no_extension], cwd=path)
-            subprocess.Popen(['rm', '-f', file], cwd=path)
+            subprocess.run(['mkdir', file_name_no_extension], cwd=path)
+            processes.append(subprocess.Popen(['tar', '-xf', file, '-C', file_name_no_extension], cwd='untarred'))
+            untarred.add(file_path)
+    [process.wait() for process in processes]
+    with open('untarred.pkl', 'rb') as f:
+        pickle.dump(untarred, f)
+

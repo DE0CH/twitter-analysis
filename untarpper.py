@@ -43,6 +43,7 @@ if __name__ == '__main__':
             logging.info(f'message: {file_path} -- {out}')
         if err:
             logging.error(f'failed: {file_path} -- {err}')
+            untarred.remove(file_path)
 
     with open('untarred.pkl', 'wb') as f:
         pickle.dump(untarred, f)

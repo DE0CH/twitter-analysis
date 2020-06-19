@@ -6,6 +6,7 @@ import bz2
 import threading
 import coloredlogs, logging
 import queue
+import pickle
 
 
 def worker():
@@ -17,8 +18,10 @@ def worker():
 
 def process_files(path, dirs, files):
     for file_name in files:
+        if os.path.join(path, file_name) in geo_filtered:
+            continue
         file_name_no_extension, file_extension = os.path.splitext(file_name)
-        out_file_name = os.path.join('processed', os.path.relpath(path, start='downloads'), file_name_no_extension)
+        out_file_name = os.path.join('processed', os.path.relpath(path, start='untarred'), file_name_no_extension)
         try:
             os.makedirs(os.path.dirname(out_file_name))
         except FileExistsError:
@@ -31,6 +34,8 @@ def process_files(path, dirs, files):
                     for line in lines:
                         # noinspection PyBroadException
                         try:
+                            if not line.strip():
+                                continue
                             twit = json.loads(line)
                             if twit.get('place', None) is not None:
                                 try:
@@ -45,12 +50,19 @@ def process_files(path, dirs, files):
                                         target_language='en')['translatedText']
                                 out_s = json.dumps(twit) + '\n'
                                 out_file.write(out_s)
-                        except Exception as e:
+                        except Exception:
+                            logging.exception('failed to process tweet')
                             pass
                 logging.info('finished ' + os.path.join(path, file_name))
+        geo_filtered.add(os.path.join(path, file_name))
 
 
 if __name__ == '__main__':
+    try:
+        with open('geo_filtered.pkl', 'rb') as f:
+            geo_filtered = pickle.load(f)
+    except FileNotFoundError:
+        geo_filtered = set()
     coloredlogs.install()
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     q = queue.Queue()
@@ -64,7 +76,9 @@ if __name__ == '__main__':
     filtered_num = 0
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
     translator = translate.Client()
-    for path, dirs, files in os.walk('downloads'):
+    for path, dirs, files in os.walk('untarred'):
         q.put((path, dirs, files))
 
-    q.join()  # block until all tasks are done
+    q.join()
+    with open('geo_filtered.pkl', 'wb') as f:
+        pickle.dump(geo_filtered, f)

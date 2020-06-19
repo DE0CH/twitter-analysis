@@ -1,8 +1,9 @@
 import os
 import pickle
 if __name__ == '__main__':
+    linesC = 0
     try:
-        with open('aggregated.pkl', 'rb') as pf:
+        with open('aggregated11.pkl', 'rb') as pf:
             processed_names = pickle.load(pf)
     except FileNotFoundError:
         processed_names = set()
@@ -15,6 +16,8 @@ if __name__ == '__main__':
                 with open(file_path) as f:
                     for line in f:
                         out_file.write(line)
+                        linesC += 1
             processed_names.add(file_path)
-    with open('aggregated.pkl', 'wb') as pf:
-        pickle.dump(processed_names, pf)
+    # with open('aggregated.pkl', 'wb') as pf:
+    #     pickle.dump(processed_names, pf)
+    print(linesC)

@@ -50,7 +50,6 @@ if __name__ == '__main__':
             q.put((file_path, file))
     q.join()
 
-    print(untarred)
     with open('untarred.pkl', 'wb') as f:
         pickle.dump(untarred, f)
     failed_files.close()

@@ -25,7 +25,6 @@ def download_file(url):
     if os.path.isfile(f_path):
         logging.debug('file already downloaded: ' + url)
         return
-    print(url)
     logging.info('started downloading: ' + url)
     # below is downloading content
 

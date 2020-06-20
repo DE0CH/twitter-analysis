@@ -5,6 +5,7 @@ import sys
 import progressbar
 import coloredlogs
 import logging
+import os
 if __name__ == '__main__':
     coloredlogs.install()
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
@@ -15,6 +16,9 @@ if __name__ == '__main__':
                 continue
             f_name = url.rsplit('/', 1)[-1]
             f_path = path.join('downloads', f_name)
+            if os.path.isfile(f_path):
+                logging.info('file already downloaded: ' + url)
+                continue
             logging.info('started downloading: ' + url)
             # below is downloading content
 

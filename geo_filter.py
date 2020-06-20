@@ -1,5 +1,4 @@
 # noinspection PyPackageRequirements
-from google.cloud import translate_v2 as translate
 import json
 import os
 import bz2
@@ -7,7 +6,7 @@ import threading
 import coloredlogs, logging
 import queue
 import pickle
-
+import googletrans
 
 def worker():
     while True:
@@ -44,7 +43,7 @@ def process_files(path, dirs, files):
                                 else:
                                     twit["translated_text"] = translator.translate(
                                         twit['text'],
-                                        target_language='en')['translatedText']
+                                        dest='en').text
                                 out_s = json.dumps(twit) + '\n'
                                 out_file.write(out_s)
                         except Exception:
@@ -71,7 +70,11 @@ if __name__ == '__main__':
     total_num = 0
     filtered_num = 0
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
-    translator = translate.Client()
+    translator = googletrans.Translator(
+        service_urls=[
+            'translate.google.com.hk',
+        ]
+    )
     for path, dirs, files in os.walk('untarred'):
         q.put((path, dirs, files))
 

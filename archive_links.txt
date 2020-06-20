@@ -1,4 +1,4 @@
-    https://archive.org/download/archiveteam-twitter-stream-2018-06/twitter-2018-06-29.tar
+https://archive.org/download/archiveteam-twitter-stream-2018-06/twitter-2018-06-29.tar
 https://archive.org/download/archiveteam-twitter-stream-2018-06/twitter-2018-06-30.tar
 https://archive.org/download/archiveteam-twitter-stream-2018-07/twitter-2018-07-01.tar
 https://archive.org/download/archiveteam-twitter-stream-2018-07/twitter-2018-07-02.tar

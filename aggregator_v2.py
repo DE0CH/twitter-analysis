@@ -27,26 +27,24 @@ def file_processor():
                 country = tweet['country_code']
                 if country == '':
                     continue
-                if country not in country_files:
-                    country_files[country] = (open(os.path.join('countries', country + '.json'), 'a'),
-                                              threading.Lock())
-                file, lock = country_files[country]
-                with lock:
-                    file.write(json.dumps(tweet) + '\n')
+                if country not in country_tweets:
+                    country_tweets[country] = list()
+                tweets = country_tweets[country]
+                tweets.append(tweet)
         processed_names.add(file_path)
         q.task_done()
 
 
 if __name__ == '__main__':
     q = queue.Queue()
-    for i in range(100):
+    for i in range(20):
         threading.Thread(target=file_processor, daemon=True).start()
     try:
         with open('aggregated.pkl', 'rb') as pf:
             processed_names = pickle.load(pf)
     except FileNotFoundError:
         processed_names = set()
-    country_files = {}
+    country_tweets = {}
     for path, dirs, files in os.walk('processed'):
         for file in files:
             file_path = os.path.join(path, file)
@@ -57,6 +55,7 @@ if __name__ == '__main__':
     q.join()
     with open('aggregated.pkl', 'wb') as pf:
         pickle.dump(processed_names, pf)
-    for file, lock in country_files.values():
-        with lock:
-            file.close()
+    for country, tweets in country_tweets.items():
+        with open(os.path.join('countries', country + '.json'), 'a') as f:
+            for tweet in tweets:
+                f.write(json.dumps(tweet) + '\n')

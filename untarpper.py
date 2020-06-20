@@ -48,11 +48,9 @@ if __name__ == '__main__':
             if file_path in untarred:
                 continue
             q.put((file_path, file))
+    q.join()
 
+    print(untarred)
     with open('untarred.pkl', 'wb') as f:
         pickle.dump(untarred, f)
-
-    q.join()
     failed_files.close()
-
-

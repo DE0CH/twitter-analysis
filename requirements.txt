@@ -1,9 +1,7 @@
 ipython
 requests
 googletrans
-googlemaps
 boto3
 progressbar2
-google-cloud-translate==2.0.1
 coloredlogs
 pycountry

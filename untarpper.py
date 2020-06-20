@@ -22,6 +22,7 @@ def untar_file():
             logging.info(f'message: {file_path} -- {out}')
         elif err:
             logging.error(f'failed: {file_path} -- {err}')
+            failed_files.write(file_path + '\n')
         else:
             logging.info(f'untarred: {file_path}')
             untarred.add(file_path)
@@ -32,6 +33,7 @@ if __name__ == '__main__':
     coloredlogs.install()
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     q = queue.Queue()
+    failed_files = open('untarred_failed.txt', 'w')
     for i in range(10):
         threading.Thread(target=untar_file, daemon=True).start()
     try:
@@ -51,6 +53,6 @@ if __name__ == '__main__':
         pickle.dump(untarred, f)
 
     q.join()
-    print('done')
+    failed_files.close()
 
 

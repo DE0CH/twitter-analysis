@@ -16,7 +16,7 @@ def untar_file():
             'tar',
             '-xf', file_path,
             '-C', os.path.join('untarred', file_name_no_extension)
-        ], capture_output=True)
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.stdout, p.stderr
         if out:
             logging.info(f'message: {file_path} -- {out}')

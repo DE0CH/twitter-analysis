@@ -35,7 +35,7 @@ def process_files(path, dirs, files, geo_filtered_dict, translator):
                                 continue
                             tweet = json.loads(line)
                             if tweet.get('place', None) is not None and tweet['place']['country_code']:
-                                text = tweet['text'].decode('utf-8')
+                                text = tweet['text'].encode('utf-8').decode('utf-8')
                                 if tweet.get('lang', '') == 'en':
                                     tweet["translated_text"] = text
                                 else:

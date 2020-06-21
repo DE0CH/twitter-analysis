@@ -33,19 +33,16 @@ def process_files(path, dirs, files, geo_filtered_dict, translator):
                         try:
                             if not line.strip():
                                 continue
-                            twit = json.loads(line)
-                            if twit.get('place', None) is not None:
-                                try:
-                                    twit["place"]["country_code"]
-                                except KeyError:
-                                    logging.info(print(json.dumps(twit)))
-                                if twit.get('lang', '') == 'en':
-                                    twit["translated_text"] = twit['text']
+                            tweet = json.loads(line)
+                            if tweet.get('place', None) is not None and tweet['place']['country_code']:
+                                text = tweet['text'].decode('utf-8')
+                                if tweet.get('lang', '') == 'en':
+                                    tweet["translated_text"] = text
                                 else:
-                                    twit["translated_text"] = translator.translate(
-                                        twit['text'],
+                                    tweet["translated_text"] = translator.translate(
+                                        text,
                                         dest='en').text
-                                out_s = json.dumps(twit) + '\n'
+                                out_s = json.dumps(tweet) + '\n'
                                 out_file.write(out_s)
                         except Exception:
                             logging.exception('failed to process tweet')

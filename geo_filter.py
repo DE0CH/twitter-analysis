@@ -53,18 +53,22 @@ if __name__ == '__main__':
         os.makedirs('processed')
     except FileExistsError:
         pass
+    processes = []
     for i in range(100):
-        multiprocessing.Process(target=worker, args=(q, geo_filtered_dict)).start()
+        p = multiprocessing.Process(target=worker, args=(q, geo_filtered_dict))
+        processes.append(p)
+        p.start()
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
     try:
         for path, dirs, files in os.walk('untarred'):
             q.put((path, dirs, files))
         q.join()
-    except KeyboardInterrupt:
-        pass
+    except KeyboardInterrupt as e:
+        raise e
     finally:
         with open('geo_filtered.pkl', 'wb') as f:
             pickle.dump(geo_filtered, f)
-        print('done, press ctrl-c again to quit')
+        for p in processes:
+            p.terminate()
 
 

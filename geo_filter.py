@@ -5,18 +5,16 @@ import bz2
 import multiprocessing
 import coloredlogs, logging
 import pickle
-import googletrans
 
 
 def worker(q, geo_filtered_dict):
-    translator = googletrans.Translator()
     while True:
         path, dirs, files = q.get()
-        process_files(path, dirs, files, geo_filtered_dict, translator)
+        process_files(path, dirs, files, geo_filtered_dict)
         q.task_done()
 
 
-def process_files(path, dirs, files, geo_filtered_dict, translator):
+def process_files(path, dirs, files, geo_filtered_dict):
     for file_name in files:
         if os.path.join(path, file_name) in geo_filtered_dict:
             continue
@@ -35,15 +33,7 @@ def process_files(path, dirs, files, geo_filtered_dict, translator):
                                 continue
                             tweet = json.loads(line)
                             if tweet.get('place', None) is not None and tweet['place']['country_code']:
-                                text = tweet['text'].encode('utf-8').decode('utf-8')
-                                if tweet.get('lang', '') == 'en':
-                                    tweet["translated_text"] = text
-                                else:
-                                    tweet["translated_text"] = translator.translate(
-                                        text,
-                                        dest='en').text
-                                out_s = json.dumps(tweet) + '\n'
-                                out_file.write(out_s)
+                                out_file.write(line)
                         except Exception:
                             logging.exception('failed to process tweet')
                 logging.info('finished ' + os.path.join(path, file_name))
@@ -70,11 +60,6 @@ if __name__ == '__main__':
     for i in range(100):
         multiprocessing.Process(target=worker, args=(q, geo_filtered_dict)).start()
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
-    translator = googletrans.Translator(
-        service_urls=[
-            'translate.google.com.hk',
-        ]
-    )
     try:
         for path, dirs, files in os.walk('untarred'):
             q.put((path, dirs, files))

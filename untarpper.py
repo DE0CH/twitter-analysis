@@ -42,14 +42,17 @@ if __name__ == '__main__':
     except FileNotFoundError:
         untarred = set()
     path = 'downloads'
-    for file in os.listdir('downloads'):
-        if file.endswith('.tar'):
-            file_path = os.path.join(path, file)
-            if file_path in untarred:
-                continue
-            q.put((file_path, file))
-    q.join()
-
-    with open('untarred.pkl', 'wb') as f:
-        pickle.dump(untarred, f)
-    failed_files.close()
+    try:
+        for file in os.listdir('downloads'):
+            if file.endswith('.tar'):
+                file_path = os.path.join(path, file)
+                if file_path in untarred:
+                    continue
+                q.put((file_path, file))
+        q.join()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        with open('untarred.pkl', 'wb') as f:
+            pickle.dump(untarred, f)
+        failed_files.close()

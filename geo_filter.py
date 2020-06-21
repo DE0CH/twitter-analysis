@@ -69,19 +69,18 @@ if __name__ == '__main__':
         pass
     for i in range(10):
         multiprocessing.Process(target=worker, args=(q, geo_filtered_dict)).start()
-    total_num = 0
-    filtered_num = 0
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
     translator = googletrans.Translator(
         service_urls=[
             'translate.google.com.hk',
         ]
     )
-    for path, dirs, files in os.walk('untarred'):
-        q.put((path, dirs, files))
-
-    q.join()
-
-    with open('geo_filtered.pkl', 'wb') as f:
-        pickle.dump(geo_filtered, f)
-    print('done')
+    try:
+        for path, dirs, files in os.walk('untarred'):
+            q.put((path, dirs, files))
+        q.join()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        with open('geo_filtered.pkl', 'wb') as f:
+            pickle.dump(geo_filtered, f)

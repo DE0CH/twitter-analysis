@@ -12,7 +12,13 @@ import multiprocessing
 def worker(queue):
     while True:
         url = queue.get()
-        download_file(url)
+        try:
+            download_file(url)
+        except KeyboardInterrupt as e:
+            f_name = url.rsplit('/', 1)[-1]
+            f_path = path.join('downloads', f_name)
+            os.remove(f_path.strip())
+            raise e
         queue.task_done()
 
 
@@ -44,12 +50,16 @@ if __name__ == '__main__':
     coloredlogs.install()
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
     queue = multiprocessing.JoinableQueue()
-    for i in range(50):
-        multiprocessing.Process(target=worker, args=(queue,), daemon=True).start()
+    processes = []
+    for i in range(1):
+        p = multiprocessing.Process(target=worker, args=(queue,))
+        processes.append(p)
+        p.start()
 
     with open('archive_links_raw.txt') as links_f:
         for url in links_f:
             queue.put(url)
 
     queue.join()
-    print('done')
+    for process in processes:
+        process.terminate()

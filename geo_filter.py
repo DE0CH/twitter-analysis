@@ -70,6 +70,7 @@ if __name__ == '__main__':
             pickle.dump(geo_filtered, f)
         print('done')
         for p in processes:
-            p.kill()
+            p.terminate()
+        exit(1)
 
 

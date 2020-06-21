@@ -72,6 +72,7 @@ if __name__ == '__main__':
     finally:
         with open('geo_filtered.pkl', 'wb') as f:
             pickle.dump(geo_filtered, f)
+        print('done')
         for p in processes:
             p.terminate()
 

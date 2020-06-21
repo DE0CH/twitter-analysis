@@ -34,7 +34,7 @@ if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     q = queue.Queue()
     failed_files = open('untarred_failed.txt', 'w')
-    for i in range(10):
+    for i in range(100):
         threading.Thread(target=untar_file, daemon=True).start()
     try:
         with open('untarred.pkl', 'rb') as f:

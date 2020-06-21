@@ -67,7 +67,7 @@ if __name__ == '__main__':
         os.makedirs('processed')
     except FileExistsError:
         pass
-    for i in range(10):
+    for i in range(100):
         multiprocessing.Process(target=worker, args=(q, geo_filtered_dict)).start()
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
     translator = googletrans.Translator(

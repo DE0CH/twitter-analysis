@@ -63,8 +63,8 @@ if __name__ == '__main__':
         for path, dirs, files in os.walk('untarred'):
             q.put((path, dirs, files))
         q.join()
-    except KeyboardInterrupt as e:
-        raise e
+    except KeyboardInterrupt:
+        pass
     finally:
         with open('geo_filtered.pkl', 'wb') as f:
             pickle.dump(geo_filtered, f)

@@ -53,10 +53,8 @@ if __name__ == '__main__':
         os.makedirs('processed')
     except FileExistsError:
         pass
-    processes = []
     for i in range(100):
-        p = multiprocessing.Process(target=worker, args=(q, geo_filtered_dict), daemon=True)
-        processes.append(p)
+        p = multiprocessing.Process(target=worker, args=(q, geo_filtered_dict))
         p.start()
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
     try:

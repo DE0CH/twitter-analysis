@@ -27,15 +27,11 @@ def process_files(path, dirs, files, geo_filtered_dict):
                     decompressed_string = bz2.decompress(file.read())
                     lines = decompressed_string.decode('utf-8').split('\n')
                     for line in lines:
-                        # noinspection PyBroadException
-                        try:
-                            if not line.strip():
-                                continue
-                            tweet = json.loads(line)
-                            if tweet.get('place', None) is not None and tweet['place']['country_code']:
-                                out_file.write(line)
-                        except Exception:
-                            logging.exception('failed to process tweet')
+                        if not line.strip():
+                            continue
+                        tweet = json.loads(line)
+                        if tweet.get('place', None) is not None and tweet['place']['country_code']:
+                            out_file.write(line)
                 logging.info('finished ' + os.path.join(path, file_name))
         geo_filtered_dict[os.path.join(path, file_name)] = True
 

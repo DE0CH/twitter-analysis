@@ -53,7 +53,7 @@ if __name__ == '__main__':
     except FileExistsError:
         pass
     processes = []
-    for i in range(100):
+    for i in range(os.cpu_count() - 1):
         p = multiprocessing.Process(target=worker, args=(q, geo_filtered_dict))
         processes.append(p)
         p.start()

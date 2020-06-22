@@ -24,7 +24,7 @@ def process_files(path, file_name):
             new_tweets = []
             for tweet in tweets:
                 try:
-                    if tweet.get('lang', 'en'):
+                    if tweet.get('lang', '') == 'en':
                         new_tweets.append(tweet)
                 except Exception as e:
                     logging.exception(e)

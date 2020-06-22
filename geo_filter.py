@@ -14,7 +14,7 @@ def worker(q, geo_filtered_dict):
             process_files(path, dirs, files, geo_filtered_dict)
             q.task_done()
     except KeyboardInterrupt:
-        exit(1)
+        pass
 
 
 def process_files(path, dirs, files, geo_filtered_dict):

@@ -25,8 +25,12 @@ def process_files(path, file_name, geo_filtered_dict):
             for line in lines:
                 if not line.strip():
                     continue
-                if '"country_code"' in line:
-                    out_file.write(line)
+                tweet = json.loads(line)
+                try:
+                    if tweet['place']['country_code']:
+                        out_file.write(line)
+                except KeyError:
+                    pass
         logging.info('finished ' + os.path.join(path, file_name))
     geo_filtered_dict[os.path.join(path, file_name)] = True
 

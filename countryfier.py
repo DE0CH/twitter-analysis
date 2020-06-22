@@ -1,8 +1,8 @@
 import os
-import pickle
 import json
 import multiprocessing
-import pycountry
+import coloredlogs
+import logging
 
 
 def filter_info(old):
@@ -16,28 +16,29 @@ def filter_info(old):
     return new
 
 
-def file_processor(q):
+def file_processor(q, manager):
     while True:
         file_path = q.get()
         with open(file_path) as f:
-            for line in f:
-                tweet = filter_info(json.loads(line))
-                country = tweet['country_code']
-                if country == '':
-                    continue
+            tweets = json.loads(f.read())
+            for tweet in tweets:
+                country = tweet['place']['country_code']
                 if country not in country_tweets:
-                    country_tweets[country] = list()
+                    country_tweets[country] = manager.list()
                 tweets = country_tweets[country]
-                tweets.append(tweet)
+                tweets.append(filter_info(tweet))
+        logging.info('finished: ' + file_path)
         q.task_done()
 
 
 if __name__ == '__main__':
+    coloredlogs.install()
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     q = multiprocessing.JoinableQueue()
     manager = multiprocessing.Manager()
     country_tweets = manager.dict()
     for i in range(os.cpu_count()-1):
-        p = multiprocessing.Process(target=file_processor, args=(q,), daemon=True)
+        p = multiprocessing.Process(target=file_processor, args=(q, manager), daemon=True)
         p.start()
     for path, dirs, files in os.walk('processed'):
         for file in files:
@@ -47,7 +48,7 @@ if __name__ == '__main__':
 
     q.join()
     for country, tweets in country_tweets.items():
-        with open(os.path.join('countries', country + '.json'), 'a') as f:
-            f.write(json.dumps(tweets))
+        with open(os.path.join('countries', country + '.json'), 'w') as f:
+            f.write(json.dumps(list(tweets)))
 
     print('done, safe to ctrl-c if it does not exit automatically')

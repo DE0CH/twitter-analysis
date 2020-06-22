@@ -8,13 +8,10 @@ import pickle
 
 
 def worker(q, geo_filtered_dict):
-    try:
-        while True:
-            path, dirs, files = q.get()
-            process_files(path, dirs, files, geo_filtered_dict)
-            q.task_done()
-    except KeyboardInterrupt:
-        pass
+    while True:
+        path, dirs, files = q.get()
+        process_files(path, dirs, files, geo_filtered_dict)
+        q.task_done()
 
 
 def process_files(path, dirs, files, geo_filtered_dict):
@@ -73,6 +70,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         pass
     finally:
+        q.close()
         geo_filtered = set(geo_filtered_dict.keys())
         with open('geo_filtered.pkl', 'wb') as f:
             pickle.dump(geo_filtered, f)

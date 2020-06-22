@@ -66,6 +66,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         pass
     finally:
+        geo_filtered = set(geo_filtered_dict.keys())
         with open('geo_filtered.pkl', 'wb') as f:
             pickle.dump(geo_filtered, f)
         print('done')

@@ -29,7 +29,7 @@ def process_files(path, file_name, geo_filtered_dict):
                 try:
                     if tweet['place']['country_code']:
                         out_file.write(line)
-                except KeyError or TypeError:
+                except (KeyError, TypeError):
                     pass
         logging.info('finished ' + os.path.join(path, file_name))
     geo_filtered_dict[os.path.join(path, file_name)] = True

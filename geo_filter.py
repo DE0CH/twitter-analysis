@@ -25,8 +25,7 @@ def process_files(path, file_name, geo_filtered_dict):
             for line in lines:
                 if not line.strip():
                     continue
-                tweet = json.loads(line)
-                if tweet.get('place', None) is not None and tweet['place']['country_code']:
+                if '"country_code"' in line:
                     out_file.write(line)
         logging.info('finished ' + os.path.join(path, file_name))
     geo_filtered_dict[os.path.join(path, file_name)] = True
@@ -54,7 +53,6 @@ if __name__ == '__main__':
         p = multiprocessing.Process(target=worker, args=(q, geo_filtered_dict))
         processes.append(p)
         p.start()
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'twitter-sentiment-analysis-f22ce784b0a8.json'
     for path, dirs, files in os.walk('untarred'):
         for file_name in files:
             if not os.path.join(path, file_name) in geo_filtered_dict and file_name.endswith('.json.bz2'):

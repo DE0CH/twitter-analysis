@@ -8,10 +8,13 @@ import pickle
 
 
 def worker(q, geo_filtered_dict):
-    while True:
-        path, dirs, files = q.get()
-        process_files(path, dirs, files, geo_filtered_dict)
-        q.task_done()
+    try:
+        while True:
+            path, dirs, files = q.get()
+            process_files(path, dirs, files, geo_filtered_dict)
+            q.task_done()
+    except KeyboardInterrupt:
+        exit(1)
 
 
 def process_files(path, dirs, files, geo_filtered_dict):
@@ -23,16 +26,20 @@ def process_files(path, dirs, files, geo_filtered_dict):
         os.makedirs(os.path.dirname(out_file_name), exist_ok=True)
         with open(out_file_name, 'w') as out_file:
             if file_name.endswith('.json.bz2'):
-                with open(os.path.join(path, file_name), 'rb') as file:
-                    decompressed_string = bz2.decompress(file.read())
-                    lines = decompressed_string.decode('utf-8').split('\n')
-                    for line in lines:
-                        if not line.strip():
-                            continue
-                        tweet = json.loads(line)
-                        if tweet.get('place', None) is not None and tweet['place']['country_code']:
-                            out_file.write(line)
-                logging.info('finished ' + os.path.join(path, file_name))
+                try:
+                    with open(os.path.join(path, file_name), 'rb') as file:
+                        decompressed_string = bz2.decompress(file.read())
+                        lines = decompressed_string.decode('utf-8').split('\n')
+                        for line in lines:
+                            if not line.strip():
+                                continue
+                            tweet = json.loads(line)
+                            if tweet.get('place', None) is not None and tweet['place']['country_code']:
+                                out_file.write(line)
+                    logging.info('finished ' + os.path.join(path, file_name))
+                except KeyboardInterrupt as e:
+                    os.remove(os.path.join(path, file_name))
+                    raise e
         geo_filtered_dict[os.path.join(path, file_name)] = True
 
 

@@ -22,15 +22,17 @@ def process_files(path, file_name, geo_filtered_dict):
         with open(os.path.join(path, file_name), 'rb') as file:
             decompressed_string = bz2.decompress(file.read())
             lines = decompressed_string.decode('utf-8').split('\n')
+            tweets = []
             for line in lines:
                 if not line.strip():
                     continue
                 tweet = json.loads(line)
                 try:
                     if tweet['place']['country_code']:
-                        out_file.write(line)
+                        tweets.append(tweet)
                 except (KeyError, TypeError):
                     pass
+        out_file.write(json.dumps(tweets))
         logging.info('finished ' + os.path.join(path, file_name))
     geo_filtered_dict[os.path.join(path, file_name)] = True
 

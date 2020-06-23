@@ -1,0 +1,133 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='WolframDesktop 12.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       161,          7]
+NotebookDataLength[      4851,        125]
+NotebookOptionsPosition[      3668,         99]
+NotebookOutlinePosition[      4008,        114]
+CellTagsIndexPosition[      3965,        111]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.8018292554418917`*^9, 3.801829268194729*^9}},
+ CellLabel->"In[3]:=",ExpressionUUID->"7e50b431-c814-43b3-8a70-47b3f510a34f"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"tweets", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<all.json\>\"", ",", "\"\<RawJSON\>\""}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.801829228874784*^9, 3.801829254017221*^9}, {
+   3.80182939434164*^9, 3.801829401467689*^9}, 3.8018304300215607`*^9, {
+   3.801831083869722*^9, 3.801831084036481*^9}},
+ CellLabel->"In[53]:=",ExpressionUUID->"8b5b0fcf-c0e1-4988-81e7-69b45f192640"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getSentiment", ":=", 
+   RowBox[{
+    RowBox[{"Classify", "[", 
+     RowBox[{"\"\<Sentiment\>\"", ",", 
+      RowBox[{"#", "[", 
+       RowBox[{"[", "\"\<text\>\"", "]"}], "]"}], ",", 
+      "\"\<Probabilities\>\""}], "]"}], "&"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.801829403348021*^9, 3.801829424402649*^9}, {
+   3.80182948481728*^9, 3.8018295571106853`*^9}, {3.8018297704071703`*^9, 
+   3.8018297721097307`*^9}, {3.8018299109776363`*^9, 3.801829913584139*^9}, {
+   3.801829960631764*^9, 3.801829969853791*^9}, {3.801830124089261*^9, 
+   3.801830125735715*^9}, 3.8018304526045523`*^9},
+ CellLabel->"In[49]:=",ExpressionUUID->"97cdedea-0864-4034-b766-46b519d70639"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"sentiments", "=", 
+   RowBox[{"getSentiment", "/@", "tweets"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.80183014636773*^9, 3.801830180606152*^9}},
+ CellLabel->"In[40]:=",ExpressionUUID->"ae7e2788-419f-4be6-9f2a-be1d0da9426b"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{"\"\<sentiments.json\>\"", ",", "sentiments"}], "]"}]], "Input",
+ CellChangeTimes->{{3.801830165287106*^9, 3.801830216629527*^9}, {
+  3.801830318257956*^9, 3.80183033794354*^9}},
+ CellLabel->"In[48]:=",ExpressionUUID->"0acc16de-62e8-484b-9e46-3d58283d42b4"],
+
+Cell[BoxData["\<\"sentiments.json\"\>"], "Output",
+ CellChangeTimes->{{3.8018301897362432`*^9, 3.80183021764944*^9}, {
+  3.801830325411562*^9, 3.801830338261691*^9}},
+ CellLabel->"Out[48]=",ExpressionUUID->"bfbbe786-961e-479c-a40b-22f2eeae4a3e"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"sentiments", ";"}]], "Input",
+ CellChangeTimes->{{3.8018301987179413`*^9, 3.801830200109646*^9}, {
+  3.8018302662198677`*^9, 3.801830269690198*^9}},
+ CellLabel->"In[46]:=",ExpressionUUID->"43846aa9-a21d-4f9e-91a6-2976cfa0bd45"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "tweets", "]"}]], "Input",
+ CellChangeTimes->{{3.801831146909433*^9, 3.80183115134906*^9}},
+ CellLabel->"In[54]:=",ExpressionUUID->"625a7efa-f1f3-4427-8efb-08b980b00e07"],
+
+Cell[BoxData["5554059"], "Output",
+ CellChangeTimes->{3.801831151926058*^9},
+ CellLabel->"Out[54]=",ExpressionUUID->"30e2dc34-92e9-40d3-82d7-7c3799d2128f"]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.801830310465623*^9, 3.801830313016934*^9}, 
+   3.801831144429473*^9},ExpressionUUID->"4ed7d1d3-68aa-457a-a389-\
+ed58fde6ec2f"]
+},
+WindowSize->{808, 911},
+WindowMargins->{{832, Automatic}, {Automatic, 289}},
+FrontEndVersion->"12.0 for Mac OS X x86 (64-bit) (April 11, 2019)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[561, 20, 269, 5, 30, "Input",ExpressionUUID->"7e50b431-c814-43b3-8a70-47b3f510a34f"],
+Cell[833, 27, 431, 9, 30, "Input",ExpressionUUID->"8b5b0fcf-c0e1-4988-81e7-69b45f192640"],
+Cell[1267, 38, 707, 14, 30, "Input",ExpressionUUID->"97cdedea-0864-4034-b766-46b519d70639"],
+Cell[1977, 54, 261, 5, 30, "Input",ExpressionUUID->"ae7e2788-419f-4be6-9f2a-be1d0da9426b"],
+Cell[CellGroupData[{
+Cell[2263, 63, 306, 5, 30, "Input",ExpressionUUID->"0acc16de-62e8-484b-9e46-3d58283d42b4"],
+Cell[2572, 70, 245, 3, 34, "Output",ExpressionUUID->"bfbbe786-961e-479c-a40b-22f2eeae4a3e"]
+}, Open  ]],
+Cell[2832, 76, 251, 4, 30, "Input",ExpressionUUID->"43846aa9-a21d-4f9e-91a6-2976cfa0bd45"],
+Cell[CellGroupData[{
+Cell[3108, 84, 208, 3, 30, "Input",ExpressionUUID->"625a7efa-f1f3-4427-8efb-08b980b00e07"],
+Cell[3319, 89, 155, 2, 69, "Output",ExpressionUUID->"30e2dc34-92e9-40d3-82d7-7c3799d2128f"]
+}, Open  ]],
+Cell[3489, 94, 175, 3, 30, "Input",ExpressionUUID->"4ed7d1d3-68aa-457a-a389-ed58fde6ec2f"]
+}
+]
+*)
+

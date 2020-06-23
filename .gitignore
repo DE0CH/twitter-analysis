@@ -179,3 +179,9 @@ downloads
 processed
 untarred
 countries
+en_filtered
+
+all_text.txt
+*.json
+*.pkl
+untarred_failed.txt
